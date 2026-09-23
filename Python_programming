@@ -1,1 +1,108 @@
+# Python Basic Programs
+
+This repository contains beginner-friendly Python programs for practicing basic programming concepts.
+
+---
+
+##  Program 1: Binary Numbers Divisible by 5
+
+### Python Code
+
+```python
+binary_num = input("Enter binary numbers: ").split(",")
+
+res = []
+
+for num in binary_num:
+    decimal = int(num, 2)
+
+    if decimal % 5 == 0:
+        res.append(num)
+
+print(",".join(res))
+```
+
+### Sample Input
+
+```
+0100,0011,1010,1001
+```
+
+### Sample Output
+
+```
+1010
+```
+
+---
+
+##  Program 2: Count Digits and Letters
+
+### Python Code
+
+```python
+text = input("Enter a string: ")
+
+digcount = 0
+lettercount = 0
+
+for c in text:
+    if c.isdigit():
+        digcount += 1
+    elif c.isalpha():
+        lettercount += 1
+
+print("Digits:", digcount)
+print("Letters:", lettercount)
+```
+
+### Sample Input
+
+```
+Hello1234
+```
+
+### Sample Output
+
+```
+Digits: 4
+Letters: 5
+```
+
+---
+
+##  Program 3: Factorial of Comma-Separated Numbers
+
+### Python Code
+
+```python
+num = input("Enter numbers: ").split(",")
+
+res = []
+
+for a in num:
+    a = int(a)
+    fact = 1
+
+    for i in range(1, a + 1):
+        fact *= i
+
+    res.append(str(fact))
+
+print(",".join(res))
+```
+
+### Sample Input
+
+```
+4,5,6
+```
+
+### Sample Output
+
+```
+24,120,720
+```
+
+---
 
