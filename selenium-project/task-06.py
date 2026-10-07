@@ -2,7 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import StaleElementReferenceException
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 import time
 
 
@@ -77,10 +77,25 @@ def ensure_value(name, expected_value):
 driver.get("https://vinothqaacademy.com/demo-site/")
 wait = WebDriverWait(driver, 20)
 
-# Fill required personal details
-fill_text("vfb-5", "Jeshwanth")
+# The site may show a browser verification page instead of the form.
+try:
+    wait.until(EC.presence_of_element_located((By.NAME, "vfb-5")))
+except TimeoutException:
+    page_text = driver.find_element(By.TAG_NAME, "body").text.lower()
+    if "checking your browser" in page_text or "please wait" in page_text:
+        input(
+            "Complete the browser verification in Chrome, then press Enter to continue: "
+        )
+        wait.until(EC.presence_of_element_located((By.NAME, "vfb-5")))
+    else:
+        raise RuntimeError(
+            "The form did not load. Check the Chrome page for an error or verification prompt."
+        )
+
+# Fill required personal details with sample data
+fill_text("vfb-5", "Test")
 print("First Name value:", driver.find_element(By.NAME, "vfb-5").get_attribute("value"))
-fill_text("vfb-7", "Kumar")
+fill_text("vfb-7", "User")
 print("Last Name value:", driver.find_element(By.NAME, "vfb-7").get_attribute("value"))
 click_by_id("vfb-31-1")  # Male
 print("Gender selected:", driver.find_element(By.ID, "vfb-31-1").is_selected())
@@ -88,29 +103,29 @@ click_by_id("vfb-20-0")  # Selenium WebDriver
 click_by_id("vfb-20-1")  # Java
 
 # Fill address details
-fill_text("vfb-13[address]", "123 ABC Street")
-fill_text("vfb-13[address-2]", "Apartment 12")
-fill_text("vfb-13[city]", "Chennai")
-fill_text("vfb-13[state]", "Tamil Nadu")
-fill_text("vfb-13[zip]", "600001")
+fill_text("vfb-13[address]", "123 Test Street")
+fill_text("vfb-13[address-2]", "Unit 1")
+fill_text("vfb-13[city]", "Test City")
+fill_text("vfb-13[state]", "Test State")
+fill_text("vfb-13[zip]", "000000")
 country = Select(driver.find_element(By.NAME, "vfb-13[country]"))
 country.select_by_visible_text("India")
 
 # Fill contact and query details
-fill_text("vfb-14", "jeshwanthkumarpayyavula@gmail.com")
+fill_text("vfb-14", "test@example.com")
 fill_text("vfb-18", "12/25/2026")
 Select(driver.find_element(By.NAME, "vfb-16[hour]")).select_by_value("10")
 Select(driver.find_element(By.NAME, "vfb-16[min]")).select_by_value("30")
-fill_text("vfb-19", "9121913227")
+fill_text("vfb-19", "0000000000")
 fill_text("vfb-23", "I want to learn Selenium Automation.")
 
 # Verification code shown on the page
-fill_text("vfb-3", "33")
+fill_text("vfb-3", input("Enter the verification code displayed on the form: "))
 
 # Final safety check before submission
-if not ensure_value("vfb-5", "Jeshwanth"):
+if not ensure_value("vfb-5", "Test"):
     raise RuntimeError("First Name is empty before submit.")
-if not ensure_value("vfb-7", "Kumar"):
+if not ensure_value("vfb-7", "User"):
     raise RuntimeError("Last Name is empty before submit.")
 if not driver.find_element(By.ID, "vfb-31-1").is_selected():
     click_by_id("vfb-31-1")
